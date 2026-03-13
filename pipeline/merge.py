@@ -600,9 +600,9 @@ def generate_ttl(data: list[dict], output_path: str):
 # ─────────────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(description="LoL Knowledge Graph Merger v3")
-    parser.add_argument("--wiki",     default="wiki_raw.json",     help="Sortie de wiki_api.py")
-    parser.add_argument("--dd",       default="ddragon_raw.json",  help="Sortie de ddragon.py")
-    parser.add_argument("--enriched", default="enriched.json",     help="JSON final enrichi")
+    parser.add_argument("--wiki",     default="data/raw/wiki_raw.json",     help="Sortie de wiki_api.py")
+    parser.add_argument("--dd",       default="data/raw/ddragon_raw.json",  help="Sortie de ddragon.py")
+    parser.add_argument("--enriched", default="data/processed/enriched.json",     help="JSON final enrichi")
     parser.add_argument("--ttl",      default="lol_ontology_v3.ttl")
     parser.add_argument("--ttl-only", action="store_true",         help="Régénère le TTL depuis enriched.json")
     parser.add_argument("--no-nlp",   action="store_true",         help="Skip NLP enrichment")

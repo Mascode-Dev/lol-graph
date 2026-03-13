@@ -636,7 +636,7 @@ def main():
                         help="Scrape un seul champion (ex: Aatrox)")
     parser.add_argument("--limit",        type=int,  default=0,
                         help="Limite le nombre de champions (0 = tous)")
-    parser.add_argument("--output",       type=str,  default="wiki_raw.json")
+    parser.add_argument("--output",       type=str,  default="data/raw/wiki_raw.json")
     parser.add_argument("--resume",       type=str,  default="",
                         help="Reprend depuis un fichier JSON partiel")
     parser.add_argument("--module-only",  action="store_true",

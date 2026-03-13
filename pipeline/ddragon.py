@@ -299,7 +299,7 @@ def main():
     parser.add_argument("--champion",  type=str, default="",
                         help="Champion unique (ex: Aatrox)")
     parser.add_argument("--limit",     type=int, default=0)
-    parser.add_argument("--output",    type=str, default="ddragon_raw.json")
+    parser.add_argument("--output",    type=str, default="data/raw/ddragon_raw.json")
     parser.add_argument("--stats",     action="store_true")
     args = parser.parse_args()
 

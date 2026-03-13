@@ -86,11 +86,10 @@ def print_stats(data: list[dict]):
         print(f"\n  ⚠️  No role: {no_role}")
     print(f"{'='*55}\n")
 
-
 def main():
     parser = argparse.ArgumentParser(description="Patch roles in enriched.json from DDragon tags")
-    parser.add_argument("--dd",       default="ddragon_raw.json")
-    parser.add_argument("--enriched", default="enriched.json")
+    parser.add_argument("--dd",       default="data/raw/ddragon_raw.json")
+    parser.add_argument("--enriched", default="data/processed/enriched.json")
     parser.add_argument("--ttl",      default="lol_ontology_v3.ttl")
     parser.add_argument("--no-ttl",   action="store_true")
     parser.add_argument("--stats",    action="store_true")

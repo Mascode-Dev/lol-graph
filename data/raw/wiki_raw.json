@@ -10,8 +10,8 @@
     "herotype": "Fighter",
     "alttype": "Tank",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Blood Well",
     "ratings": {
@@ -549,8 +549,8 @@
     "herotype": "Fighter",
     "alttype": "Assassin",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Energy",
     "ratings": {
@@ -657,8 +657,8 @@
     "herotype": "Tank",
     "alttype": "Support",
     "positions": [
-      "Support",
-      "Jungle"
+      "Jungle",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -1086,8 +1086,8 @@
     "herotype": "Marksman",
     "alttype": "Support",
     "positions": [
-      "Support",
-      "Bot/ADC"
+      "Bot/ADC",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -1838,9 +1838,9 @@
     "herotype": "Mage",
     "alttype": "Support",
     "positions": [
-      "Support",
       "Middle",
-      "Jungle"
+      "Jungle",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -2268,8 +2268,8 @@
     "herotype": "Fighter",
     "alttype": "Assassin",
     "positions": [
-      "Support",
-      "Top"
+      "Top",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -2806,8 +2806,8 @@
     "herotype": "Fighter",
     "alttype": "Assassin",
     "positions": [
-      "Middle",
-      "Jungle"
+      "Jungle",
+      "Middle"
     ],
     "resource": "Mana",
     "ratings": {
@@ -2914,8 +2914,8 @@
     "herotype": "Tank",
     "alttype": "Fighter",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Health",
     "ratings": {
@@ -3129,8 +3129,8 @@
     "herotype": "Assassin",
     "alttype": "Mage",
     "positions": [
-      "Middle",
-      "Jungle"
+      "Jungle",
+      "Middle"
     ],
     "resource": "Mana",
     "ratings": {
@@ -4415,9 +4415,9 @@
     "herotype": "Fighter",
     "alttype": "Mage",
     "positions": [
+      "Jungle",
       "Top",
-      "Middle",
-      "Jungle"
+      "Middle"
     ],
     "resource": "Mana",
     "ratings": {
@@ -4631,8 +4631,8 @@
     "herotype": "Fighter",
     "alttype": "Assassin",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -4846,9 +4846,9 @@
     "herotype": "Mage",
     "alttype": "Support",
     "positions": [
-      "Support",
       "Middle",
-      "Top"
+      "Top",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -5599,8 +5599,8 @@
     "herotype": "Fighter",
     "alttype": "Assassin",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -6354,8 +6354,8 @@
     "alttype": "Support",
     "positions": [
       "Support",
-      "Middle",
-      "Top"
+      "Top",
+      "Middle"
     ],
     "resource": "Mana",
     "ratings": {
@@ -8714,8 +8714,8 @@
     "herotype": "Tank",
     "alttype": "Support",
     "positions": [
-      "Support",
-      "Jungle"
+      "Jungle",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -9358,8 +9358,8 @@
     "herotype": "Support",
     "alttype": "Mage",
     "positions": [
-      "Support",
-      "Middle"
+      "Middle",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -9943,7 +9943,7 @@
     "abilities": [
       {
         "slot": "Passive",
-        "name": "Before disguising",
+        "name": "[1] = \"Inherent Glamour",
         "description": "",
         "cooldown_str": "",
         "cost_str": "",
@@ -9951,7 +9951,7 @@
       },
       {
         "slot": "Q",
-        "name": "While disguised",
+        "name": "[1] = \"Blooming Burst",
         "description": "",
         "cooldown_str": "",
         "cost_str": "",
@@ -9959,7 +9959,23 @@
       },
       {
         "slot": "W",
-        "name": "Breaking the disguise",
+        "name": "[1] = \"Shapesplitter",
+        "description": "",
+        "cooldown_str": "",
+        "cost_str": "",
+        "range": null
+      },
+      {
+        "slot": "E",
+        "name": "[1] = \"Tangle-Barbs",
+        "description": "",
+        "cooldown_str": "",
+        "cost_str": "",
+        "range": null
+      },
+      {
+        "slot": "R",
+        "name": "[1] = \"Pop Blossom",
         "description": "",
         "cooldown_str": "",
         "cost_str": "",
@@ -10736,10 +10752,10 @@
     "herotype": "Fighter",
     "alttype": "Assassin",
     "positions": [
-      "Support",
-      "Top",
       "Middle",
-      "Jungle"
+      "Jungle",
+      "Top",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -10846,8 +10862,8 @@
     "herotype": "Tank",
     "alttype": "Fighter",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -11919,8 +11935,8 @@
     "herotype": "Assassin",
     "alttype": "Fighter",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Ferocity",
     "ratings": {
@@ -12564,8 +12580,8 @@
     "herotype": "Support",
     "alttype": "Marksman",
     "positions": [
-      "Support",
-      "Bot/ADC"
+      "Bot/ADC",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -12673,8 +12689,8 @@
     "herotype": "Support",
     "alttype": "Mage",
     "positions": [
-      "Support",
-      "Bot/ADC"
+      "Bot/ADC",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -12888,8 +12904,8 @@
     "herotype": "Assassin",
     "alttype": "",
     "positions": [
-      "Support",
-      "Jungle"
+      "Jungle",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -12996,8 +13012,8 @@
     "herotype": "Tank",
     "alttype": "",
     "positions": [
-      "Support",
-      "Top"
+      "Top",
+      "Support"
     ],
     "resource": "Energy",
     "ratings": {
@@ -13533,8 +13549,8 @@
     "herotype": "Tank",
     "alttype": "Fighter",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -13642,8 +13658,8 @@
     "alttype": "Mage",
     "positions": [
       "Bot/ADC",
-      "Middle",
-      "Top"
+      "Top",
+      "Middle"
     ],
     "resource": "Mana",
     "ratings": {
@@ -13964,9 +13980,9 @@
     "herotype": "Mage",
     "alttype": "Support",
     "positions": [
+      "Bot/ADC",
       "Support",
-      "Middle",
-      "Bot/ADC"
+      "Middle"
     ],
     "resource": "Mana",
     "ratings": {
@@ -14289,8 +14305,8 @@
     "herotype": "Tank",
     "alttype": "Support",
     "positions": [
-      "Support",
-      "Top"
+      "Top",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -14397,8 +14413,8 @@
     "herotype": "Mage",
     "alttype": "Support",
     "positions": [
-      "Middle",
-      "Jungle"
+      "Jungle",
+      "Middle"
     ],
     "resource": "Mana",
     "ratings": {
@@ -14505,8 +14521,8 @@
     "herotype": "Assassin",
     "alttype": "",
     "positions": [
-      "Middle",
-      "Jungle"
+      "Jungle",
+      "Middle"
     ],
     "resource": "Mana",
     "ratings": {
@@ -14614,8 +14630,8 @@
     "herotype": "Support",
     "alttype": "Tank",
     "positions": [
-      "Support",
-      "Middle"
+      "Middle",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -14722,9 +14738,9 @@
     "herotype": "Marksman",
     "alttype": "Mage",
     "positions": [
-      "Support",
+      "Jungle",
       "Top",
-      "Jungle"
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -15046,8 +15062,8 @@
     "herotype": "Fighter",
     "alttype": "Tank",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -15262,8 +15278,8 @@
     "alttype": "Marksman",
     "positions": [
       "Bot/ADC",
-      "Middle",
-      "Top"
+      "Top",
+      "Middle"
     ],
     "resource": "Mana",
     "ratings": {
@@ -15370,8 +15386,8 @@
     "herotype": "Marksman",
     "alttype": "Assassin",
     "positions": [
-      "Support",
-      "Bot/ADC"
+      "Bot/ADC",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -15478,8 +15494,8 @@
     "herotype": "Fighter",
     "alttype": "Tank",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -16017,8 +16033,8 @@
     "herotype": "Mage",
     "alttype": "Support",
     "positions": [
-      "Support",
-      "Middle"
+      "Middle",
+      "Support"
     ],
     "resource": "Mana",
     "ratings": {
@@ -16661,8 +16677,8 @@
     "herotype": "Fighter",
     "alttype": "Tank",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -16769,8 +16785,8 @@
     "herotype": "Fighter",
     "alttype": "Tank",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -16877,8 +16893,8 @@
     "herotype": "Fighter",
     "alttype": "Tank",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -17307,9 +17323,9 @@
     "herotype": "Fighter",
     "alttype": "Assassin",
     "positions": [
+      "Bot/ADC",
       "Top",
-      "Middle",
-      "Bot/ADC"
+      "Middle"
     ],
     "resource": "Flow",
     "ratings": {
@@ -17846,8 +17862,8 @@
     "herotype": "Fighter",
     "alttype": "Assassin",
     "positions": [
-      "Top",
-      "Jungle"
+      "Jungle",
+      "Top"
     ],
     "resource": "Mana",
     "ratings": {
@@ -17954,9 +17970,9 @@
     "herotype": "Tank",
     "alttype": "Fighter",
     "positions": [
-      "Support",
+      "Jungle",
       "Top",
-      "Jungle"
+      "Support"
     ],
     "resource": "Health",
     "ratings": {
@@ -18063,8 +18079,8 @@
     "herotype": "Assassin",
     "alttype": "",
     "positions": [
-      "Middle",
-      "Jungle"
+      "Jungle",
+      "Middle"
     ],
     "resource": "Energy",
     "ratings": {

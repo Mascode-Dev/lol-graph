@@ -349,8 +349,8 @@ def print_stats(data: list[dict]):
 # ─────────────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(description="LoL NLP Enrichment Pipeline v2")
-    parser.add_argument("--input",  default="merged.json")
-    parser.add_argument("--output", default="enriched.json")
+    parser.add_argument("--input",  default="data/processed/enriched.json")
+    parser.add_argument("--output", default="data/processed/enriched.json")
     parser.add_argument("--stats",  action="store_true")
     args = parser.parse_args()
 

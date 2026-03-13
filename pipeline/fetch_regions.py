@@ -343,13 +343,14 @@ def print_stats(data: list[dict]):
 # MAIN
 # ─────────────────────────────────────────────────────────────
 def main():
-    parser = argparse.ArgumentParser(description="LoL Region Injector v2")
-    parser.add_argument("--enriched", default="enriched.json")
+    parser = argparse.ArgumentParser(description="Fetch and Inject Regions into enriched.json")
+    parser.add_argument("--enriched", default="data/processed/enriched.json")
     parser.add_argument("--ttl",      default="lol_ontology_v3.ttl")
-    parser.add_argument("--wiki",     default="wiki_raw.json",
+    parser.add_argument("--wiki",     default="data/raw/wiki_raw.json",
                         help="wiki_raw.json pour enrichir (optionnel)")
-    parser.add_argument("--dry-run",  action="store_true")
     parser.add_argument("--no-ttl",   action="store_true")
+    parser.add_argument("--stats",    action="store_true")
+    parser.add_argument("--dry-run",  action="store_true")
     args = parser.parse_args()
 
     if not Path(args.enriched).exists():

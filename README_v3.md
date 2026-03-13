@@ -7,12 +7,12 @@ wiki.leagueoflegends.com          ddragon.leagueoflegends.com
         │                                    │
    wiki_api.py                          ddragon.py
         │                                    │
-   wiki_raw.json                      ddragon_raw.json
+   data/raw/wiki_raw.json         data/raw/ddragon_raw.json
         └──────────────┬─────────────────────┘
                     merge.py
                  (+ nlp_extractor.py)
                        │
-                  enriched.json
+            data/processed/enriched.json
                        │
                lol_ontology_v3.ttl
                        │
@@ -51,47 +51,47 @@ python -m spacy download en_core_web_sm
 # Étape 1 — Wiki officiel (module Lua = 1 appel API pour 172 champions!)
 # --module-only = ultra rapide (pas de fetch des pages HTML individuelles)
 # Sans --module-only = fetch aussi le lore + abilities depuis les pages (plus lent mais plus riche)
-python wiki_api.py --output wiki_raw.json
+python wiki_api.py --output data/raw/wiki_raw.json
 
 # Option rapide (module Lua uniquement, ~5 secondes)
-python wiki_api.py --module-only --output wiki_raw.json
+python wiki_api.py --module-only --output data/raw/wiki_raw.json
 
 # Option complète (module + pages HTML, ~4 min)
-python wiki_api.py --output wiki_raw.json
+python wiki_api.py --output data/raw/wiki_raw.json
 
 # Étape 2 — Data Dragon (parallèle, ~2 min pour 172 champions)
-python ddragon.py --output ddragon_raw.json --stats
+python ddragon.py --output data/raw/ddragon_raw.json --stats
 
 # Étape 3 — Merge + NLP + génération TTL
 python merge.py \
-  --wiki wiki_raw.json \
-  --dd   ddragon_raw.json \
-  --enriched enriched.json \
+  --wiki data/raw/wiki_raw.json \
+  --dd   data/raw/ddragon_raw.json \
+  --enriched data/processed/enriched.json \
   --ttl  lol_ontology_v3.ttl
 ```
 
 ### Option B — DDragon uniquement (si le wiki est inaccessible)
 
 ```bash
-python ddragon.py --output ddragon_raw.json
-python merge.py --dd ddragon_raw.json --wiki /dev/null \
-  --enriched enriched.json --ttl lol_ontology_v3.ttl
+python ddragon.py --output data/raw/ddragon_raw.json
+python merge.py --dd data/raw/ddragon_raw.json --wiki /dev/null \
+  --enriched data/processed/enriched.json --ttl lol_ontology_v3.ttl
 ```
 
 ### Option C — Test sur 5 champions
 
 ```bash
-python wiki_api.py --limit 5 --output wiki_test.json
-python ddragon.py  --limit 5 --output dd_test.json
-python merge.py --wiki wiki_test.json --dd dd_test.json \
-  --enriched test_enriched.json --ttl test.ttl
+python wiki_api.py --limit 5 --output data/raw/wiki_test.json
+python ddragon.py  --limit 5 --output data/raw/dd_test.json
+python merge.py --wiki data/raw/wiki_test.json --dd data/raw/dd_test.json \
+  --enriched data/processed/test_enriched.json --ttl test.ttl
 ```
 
 ### Reprendre après interruption
 
 ```bash
 # wiki_api.py sauvegarde tous les 15 champions
-python wiki_api.py --resume wiki_raw.json --output wiki_raw.json
+python wiki_api.py --resume data/raw/wiki_raw.json --output data/raw/wiki_raw.json
 ```
 
 ---
