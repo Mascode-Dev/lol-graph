@@ -1,0 +1,101 @@
+@prefix : <http://www.semanticweb.org/lol-project/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+:ontology rdf:type owl:Ontology .
+
+#################################################################
+#    Classes
+#################################################################
+
+:Champion rdf:type owl:Class .
+:Ability rdf:type owl:Class .
+:Passive rdf:type owl:Class ; rdfs:subClassOf :Ability .
+:ActiveAbility rdf:type owl:Class ; rdfs:subClassOf :Ability .
+:Role rdf:type owl:Class .
+:Resource rdf:type owl:Class .
+:Effect rdf:type owl:Class .
+:CrowdControl rdf:type owl:Class ; rdfs:subClassOf :Effect .
+:DamageType rdf:type owl:Class .
+:Region rdf:type owl:Class .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:hasAbility rdf:type owl:ObjectProperty ; rdfs:domain :Champion ; rdfs:range :Ability .
+:hasRole rdf:type owl:ObjectProperty ; rdfs:domain :Champion ; rdfs:range :Role .
+:usesResource rdf:type owl:ObjectProperty ; rdfs:domain :Champion ; rdfs:range :Resource .
+:hasEffect rdf:type owl:ObjectProperty ; rdfs:domain :Ability ; rdfs:range :Effect .
+:dealsDamageType rdf:type owl:ObjectProperty ; rdfs:domain :Ability ; rdfs:range :DamageType .
+:originatesFrom rdf:type owl:ObjectProperty ; rdfs:domain :Champion ; rdfs:range :Region .
+
+#################################################################
+#    Data Properties
+#################################################################
+
+:hasName rdf:type owl:DatatypeProperty ; rdfs:range xsd:string .
+:hasTitle rdf:type owl:DatatypeProperty ; rdfs:range xsd:string .
+:hasLore rdf:type owl:DatatypeProperty ; rdfs:range xsd:string .
+:hasBaseHP rdf:type owl:DatatypeProperty ; rdfs:range xsd:float .
+:hasAttackDamage rdf:type owl:DatatypeProperty ; rdfs:range xsd:float .
+:hasDifficulty rdf:type owl:DatatypeProperty ; rdfs:range xsd:integer .
+:hasAttackRange rdf:type owl:DatatypeProperty ; rdfs:range xsd:integer .
+:hasMoveSpeed rdf:type owl:DatatypeProperty ; rdfs:range xsd:integer .
+
+#################################################################
+#    Individus (Exemples basés sur tes données)
+#################################################################
+
+# Rôles
+:Fighter rdf:type :Role .
+:Mage rdf:type :Role .
+:Assassin rdf:type :Role .
+:Marksman rdf:type :Role .
+:Support rdf:type :Role .
+:Tank rdf:type :Role .
+
+# Ressources
+:Mana rdf:type :Resource .
+:Energy rdf:type :Resource .
+:BloodWell rdf:type :Resource .
+:None rdf:type :Resource .
+
+# Types de Dégâts
+:PhysicalDamage rdf:type :DamageType .
+:MagicDamage rdf:type :DamageType .
+
+# Effets
+:KnockUp rdf:type :CrowdControl .
+:Pull rdf:type :CrowdControl .
+:Slow rdf:type :CrowdControl .
+:Fear rdf:type :CrowdControl .
+:Dash rdf:type :Effect .
+
+# Champion : Aatrox
+:Aatrox rdf:type :Champion ;
+    :hasName "Aatrox" ;
+    :hasTitle "the Darkin Blade" ;
+    :hasLore "Once honored defenders of Shurima against the Void..." ;
+    :hasBaseHP 650.0 ;
+    :hasAttackDamage 60.0 ;
+    :hasDifficulty 4 ;
+    :hasAttackRange 175 ;
+    :hasMoveSpeed 345 ;
+    :hasRole :Fighter ;
+    :usesResource :BloodWell ;
+    :hasAbility :The_Darkin_Blade , :Infernal_Chains , :Umbral_Dash , :World_Ender .
+
+# Capacités d'Aatrox
+:The_Darkin_Blade rdf:type :ActiveAbility ;
+    :hasName "The Darkin Blade" ;
+    :dealsDamageType :PhysicalDamage ;
+    :hasEffect :KnockUp .
+
+:Infernal_Chains rdf:type :ActiveAbility ;
+    :hasName "Infernal Chains" ;
+    :dealsDamageType :PhysicalDamage ;
+    :hasEffect :Slow , :Pull .
