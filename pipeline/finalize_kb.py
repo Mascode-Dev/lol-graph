@@ -12,7 +12,6 @@ FINAL_NT = "data/processed/final_kb.nt"
 
 def ttl_to_nt_simple(ttl_path):
     """Very basic conversion of our specific TTL to NT by stripping prefixes and comments."""
-    # Note: In a production environment, use rdflib. 
     # Here we do it manually to avoid dependency issues and stay fast.
     triples = []
     prefixes = {
@@ -77,7 +76,7 @@ def main():
         for t in all_triples:
             f.write(t + "\n")
             
-    # 5. Calculate Final Stats (Step 4 Requirement)
+    # 5. Calculate Final Stats
     entities = set()
     relations = set()
     for t in all_triples:
@@ -89,13 +88,13 @@ def main():
                 entities.add(parts[2])
                 
     log.info("=========================================")
-    log.info("📊 FINAL KB STATISTICS (LAB 4)")
+    log.info("FINAL KB STATISTICS")
     log.info("=========================================")
     log.info(f"Total Triplets  : {len(all_triples)}")
     log.info(f"Total Entities  : {len(entities)}")
     log.info(f"Total Relations : {len(relations)}")
     log.info("=========================================")
-    log.info(f"✅ Final KB saved to: {FINAL_NT}")
+    log.info(f"Final KB saved to: {FINAL_NT}")
 
 if __name__ == "__main__":
     main()
