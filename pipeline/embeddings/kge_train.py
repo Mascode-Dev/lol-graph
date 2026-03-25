@@ -32,7 +32,7 @@ def train_and_evaluate():
             testing=testing,
             model=model_name,
             model_kwargs=dict(embedding_dim=100),
-            training_kwargs=dict(num_epochs=20, use_tqdm=True),
+            training_kwargs=dict(num_epochs=200, use_tqdm=True),
             evaluation_kwargs=dict(use_tqdm=True),
             random_seed=42,
             device='cuda' if torch.cuda.is_available() else 'cpu'
