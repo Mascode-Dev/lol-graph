@@ -7,12 +7,12 @@ As required by the lab documentation, the following metrics describe the final s
 
 | Component | Count |
 |-----------|-------|
-| **Number of Triplets** | 48,062 |
-| **Number of Entities** | 23,911 |
-| **Number of Relations** | 12,283 |
+| **Number of Triplets** | 52,054 |
+| **Number of Entities** | 14,594 |
+| **Number of Relations** | 196 |
 
 ## 2. Expansion Details
-- **Base KB:** 31,290 triplets (LoL private data).
+- **Base KB:** 35,109 triplets (LoL private data).
 - **Expansion Method:** Anchored SPARQL expansion (Wikidata).
 - **Expansion Depth:** 2-Hops (Champions -> Linked Entities -> Their attributes).
 - **Confidence Threshold:** $\ge 0.70$ for all aligned entities.

@@ -1,6 +1,6 @@
-import os
-import re
-from pathlib import Path
+import rdflib
+from rdflib import Graph, URIRef, Literal, BNode
+from rdflib.namespace import RDF, RDFS, OWL, XSD
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -10,65 +10,63 @@ PRIVATE_TTL = "lol_ontology_v3.ttl"
 EXPANDED_NT = "data/processed/expanded_kb_2hop.nt"
 FINAL_NT = "data/processed/final_kb.nt"
 
-def ttl_to_nt_simple(ttl_path):
-    """Very basic conversion of our specific TTL to NT by stripping prefixes and comments."""
-    # Here we do it manually to avoid dependency issues and stay fast.
-    triples = []
-    prefixes = {
-        "lol:": "<http://leagueoflegends.knowledge/ontology#",
-        "champ:": "<http://leagueoflegends.knowledge/champion/",
-        "spell:": "<http://leagueoflegends.knowledge/spell/",
-        "region:": "<http://leagueoflegends.knowledge/region/",
-        "pos:": "<http://leagueoflegends.knowledge/position/",
-        "role:": "<http://leagueoflegends.knowledge/role/",
-        "cc:": "<http://leagueoflegends.knowledge/cc_effect/",
-        "mech:": "<http://leagueoflegends.knowledge/mechanic/",
-        "style:": "<http://leagueoflegends.knowledge/playstyle/",
-        "rdfs:": "<http://www.w3.org/2000/01/rdf-schema#",
-        "rdf:": "<http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        "owl:": "<http://www.w3.org/2002/07/owl#",
-        "xsd:": "<http://www.w3.org/2001/XMLSchema#",
-    }
+def load_private_kb(ttl_path):
+    """Load the private KB using rdflib for robust parsing."""
+    g = Graph()
+    try:
+        g.parse(ttl_path, format="turtle")
+    except Exception as e:
+        log.error(f"Error parsing {ttl_path}: {e}")
+        return []
     
-    with open(ttl_path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("@") or line.startswith("#"):
-                continue
+    triples = []
+    for s, p, o in g:
+        # We need to format them as NT-style strings for consistency with Wikidata data
+        s_str = f"<{s}>"
+        p_str = f"<{p}>"
+        if isinstance(o, URIRef):
+            o_str = f"<{o}>"
+        elif isinstance(o, Literal):
+            # Escape quotes and keep it simple
+            val = str(o).replace('"', '\\"')
+            o_str = f'"{val}"'
+        else:
+            # Skip BNodes or other types if not relevant for KGE
+            continue
             
-            # Simple triplet line: s p o ; or s p o .
-            # This is a simplification for our specific file structure
-            parts = line.split()
-            if len(parts) >= 3:
-                s, p, o = parts[0], parts[1], parts[2]
-                
-                # Replace prefixes
-                for pref, uri in prefixes.items():
-                    if s.startswith(pref): s = s.replace(pref, uri).replace(";", "") + ">"
-                    if p.startswith(pref): p = p.replace(pref, uri).replace(";", "") + ">"
-                    if o.startswith(pref): o = o.replace(pref, uri).replace(";", "") + ">"
-                
-                # Basic literal check
-                if not o.startswith("<") and not o.startswith("\""):
-                    o = f"\"{o}\""
-                
-                triples.append(f"{s} {p} {o} .")
+        triples.append(f"{s_str} {p_str} {o_str} .")
     return triples
 
 def main():
     log.info("Cleaning and Merging final Knowledge Base...")
     
     # 1. Convert Private KB to NT
-    private_triples = ttl_to_nt_simple(PRIVATE_TTL)
+    private_triples = load_private_kb(PRIVATE_TTL)
     log.info(f"Loaded {len(private_triples)} private triples.")
     
-    # 2. Load Expanded Triples
+    # 2. Load and Filter Expanded Triples
     with open(EXPANDED_NT, encoding="utf-8") as f:
-        expanded_triples = [line.strip() for line in f if line.strip() and not line.startswith("#")]
-    log.info(f"Loaded {len(expanded_triples)} expanded triples.")
+        expanded_lines = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+    
+    log.info(f"Loaded {len(expanded_lines)} raw expanded triples.")
+    
+    # Analyze relations in expanded KB to filter them
+    from collections import Counter
+    expanded_preds = []
+    for t in expanded_lines:
+        parts = t.split()
+        if len(parts) >= 2:
+            expanded_preds.append(parts[1])
+    
+    pred_counts = Counter(expanded_preds)
+    # We take top 120 to stay safe within 200 total (Private 77 + ~120 = ~197)
+    top_expanded_preds = [p for p, count in pred_counts.most_common(120)]
+    
+    filtered_expanded = [t for t in expanded_lines if t.split()[1] in top_expanded_preds]
+    log.info(f"Filtered to top 120 Wikidata relations: {len(filtered_expanded)} triples remaining.")
     
     # 3. Merge and Unique
-    all_triples = list(set(private_triples + expanded_triples))
+    all_triples = list(set(private_triples + filtered_expanded))
     log.info(f"Merged total: {len(all_triples)} unique triples.")
     
     # 4. Write Final NT

@@ -46,13 +46,16 @@ with onto:
 
     # 5. Définition de la règle SWRL
     # On utilise les préfixes définis ci-dessus
-    rule = Imp()
-    rule.set_as_rule("""
-        Champion(?c) ^ 
-        champHasMechanic(?c, Dash) ^ 
-        champHasCCEffect(?c, Stun) 
-        -> hasPlaystyleTag(?c, Engager)
-    """, namespaces = [lol, mech, cc, style])
+        rule = Imp()
+        
+        # Utilisez la virgule (,) pour le ET logique.
+        # Ne mettez PAS de préfixes, Owlready2 trouvera tout seul grâce à l'argument namespaces.
+        rule.set_as_rule("""
+            Champion(?c), 
+            champHasMechanic(?c, Dash), 
+            champHasCCEffect(?c, Stun) 
+            -> hasPlaystyleTag(?c, Engager)
+        """, namespaces = [lol, mech, cc, style])
 
 print("Lancement du raisonneur Pellet...")
 with onto:

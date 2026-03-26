@@ -59,30 +59,34 @@ def clean_and_split(input_file, output_dir):
     valid_triples_raw = triples[train_size:train_size + valid_size]
     test_triples_raw = triples[train_size + valid_size:]
 
-    # Ensure no entity appears only in validation/test
+    # Ensure no entity or relation appears only in validation/test
     train_entities = set()
+    train_relations = set()
     for s, p, o in train_triples:
         train_entities.add(s)
         train_entities.add(o)
+        train_relations.add(p)
 
     final_valid_triples = []
     final_test_triples = []
 
     for s, p, o in valid_triples_raw:
-        if s in train_entities and o in train_entities:
+        if s in train_entities and o in train_entities and p in train_relations:
             final_valid_triples.append((s, p, o))
         else:
             train_triples.append((s, p, o))
             train_entities.add(s)
             train_entities.add(o)
+            train_relations.add(p)
 
     for s, p, o in test_triples_raw:
-        if s in train_entities and o in train_entities:
+        if s in train_entities and o in train_entities and p in train_relations:
             final_test_triples.append((s, p, o))
         else:
             train_triples.append((s, p, o))
             train_entities.add(s)
             train_entities.add(o)
+            train_relations.add(p)
 
     print(f"Final counts:")
     print(f"Train: {len(train_triples)}")
