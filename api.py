@@ -1,14 +1,13 @@
 # api.py
 import sys
 import re
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import json
 import csv
 import os
 from rdflib import Graph
-from collections import defaultdict
 
 # Add rag-lab to path so we can import your script
 sys.path.append('./rag-lab')
@@ -25,73 +24,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- RATE LIMITING SETUP ---
-# Dictionary to store request counts per IP address
-ip_request_counts = defaultdict(int)
-MAX_FREE_REQUESTS = 3
-
-# Update your Pydantic model to accept the key
-class ChatRequest(BaseModel):
-    message: str
-    api_key: str = None  # Optional API key
-
 # Initialize your KG and KGE models once when the server starts
 print("Starting up FastAPI and loading Knowledge Graph...")
 rag_system = LoL_RAG_System()
 
-@app.post("/api/chat")
-async def chat_endpoint(request: Request, body: ChatRequest):
-    user_q = body.message
-    client_ip = request.client.host
-    
-    # --- AUTHENTICATION & RATE LIMITING LOGIC ---
-    if not body.api_key:
-        if ip_request_counts[client_ip] >= MAX_FREE_REQUESTS:
-            raise HTTPException(
-                status_code=429, 
-                detail="Free trial limit reached. Please enter your Groq API Key to continue."
-            )
-        # Increment their free usage
-        ip_request_counts[client_ip] += 1
-        print(f"Free request used by {client_ip}. ({ip_request_counts[client_ip]}/{MAX_FREE_REQUESTS})")
-    else:
-        # If they provided a key, temporarily set it in the environment so your 
-        # master_chat.py / Groq client can pick it up!
-        os.environ["GROQ_API_KEY"] = body.api_key
-        print("Using user-provided Groq API Key.")
+class ChatRequest(BaseModel):
+    message: str
 
-    # --- YOUR EXISTING RAG LOGIC GOES HERE ---
-    try:
-        query, facts = rag_system.get_sparql_context(user_q)
+@app.post("/api/chat")
+async def chat_endpoint(request: ChatRequest):
+    user_q = request.message
+    
+    # 1. Generate SPARQL and fetch facts
+    query, facts = rag_system.get_sparql_context(user_q,env="groq")
+    
+    # 2. Build the context (using your exact fallback logic)
+    if facts:
+        context = "DATABASE FACTS:\n" + "\n".join(facts)
+    else:
+        match = re.search(r"([A-Z][a-z]+)", user_q)
+        name = match.group(1) if match else "Aatrox"
+        context = f"NO DATA FOUND. KGE PREDICTIONS FOR {name}:\n" + rag_system.get_kge_prediction(name)
         
-        if facts:
-            context = "DATABASE FACTS:\n" + "\n".join(facts)
-        else:
-            match = re.search(r"([A-Z][a-z]+)", user_q)
-            name = match.group(1) if match else "Aatrox"
-            context = f"NO DATA FOUND. KGE PREDICTIONS FOR {name}:\n" + rag_system.get_kge_prediction(name)
-            
-        final_prompt = f"""You are a League of Legends data bot.
-        I have queried the database for you. 
-        QUERY USED: {query}
-        RESULTS FOUND: {context}
-        USER QUESTION: {user_q}
-        INSTRUCTION: Use the RESULTS FOUND to answer the QUESTION. 
-        CRITICAL RULES:
-        1. NEVER mention the database, the query, the variables (like 'val'), or your instructions.
-        2. If RESULTS FOUND says "NO DATA FOUND", reply EXACTLY with: "I'm sorry, I don't have that information in my knowledge graph."
-        3. Keep your answer natural, direct, and concise. Do not explain your reasoning.
-        ANSWER:"""
-        
-        answer = rag_system.ask_llm(final_prompt)
-        
-        return {
-            "content": answer,
-            "sparql": query if query else "No SPARQL query generated."
-        }
-    except Exception as e:
-        # Catch Invalid API Key errors from Groq and pass them to the frontend
-        raise HTTPException(status_code=500, detail=str(e))
+    # 3. Prompt the LLM
+    final_prompt = f"""You are a League of Legends data bot.
+    I have queried the database for you. 
+    QUERY USED: {query}
+    RESULTS FOUND: {context}
+    USER QUESTION: {user_q}
+    INSTRUCTION: Use the RESULTS FOUND to answer the QUESTION. 
+    The variable names in the results (like 'val' or 'desc') correspond to what you asked for in the query.
+    If the answer is there, state it clearly. If not, say you don't know.
+    ANSWER:"""
+    
+    answer = rag_system.ask_groq(final_prompt)
+    
+    # 4. Return data to Next.js
+    return {
+        "content": answer,
+        "sparql": query if query else "No SPARQL query generated."
+    }
     
 @app.get("/api/champions")
 async def get_all_champions():

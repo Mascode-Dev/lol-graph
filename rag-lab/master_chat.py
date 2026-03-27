@@ -7,6 +7,10 @@ import sys
 from rdflib import Graph
 from pykeen.predict import predict_target
 from pykeen.triples import TriplesFactory
+from groq import Groq
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # --- Configuration ---
 KG_PATH = "data/processed/final_kb.nt"
@@ -14,6 +18,9 @@ KGE_MODEL_DIR = "models/kge/DistMult"
 KGE_TRAIN_PATH = "data/kge/train.txt"
 OLLAMA_URL = "http://localhost:11434/api/generate"
 LLM_MODEL = "llama3.1"
+
+GROQ_MODEL = os.environ.get("GROQ_MODEL")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
 PREFIXES = """
 PREFIX lol: <http://leagueoflegends.knowledge/ontology#>
@@ -46,8 +53,30 @@ class LoL_RAG_System:
             return r.json().get("response", "Error")
         except:
             return "Connection Error"
+            
+    def ask_groq(self, prompt):
+        try:
+            client = Groq(
+                api_key=GROQ_API_KEY,
+            )
+            
+            chat_completion = client.chat.completions.create(
+                model=GROQ_MODEL,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt,
+                    }
+                ]
+            )
+            
+            return chat_completion.choices[0].message.content
+        except:
+            import traceback
+            traceback.print_exc()
+            return "Connection Error"
 
-    def get_sparql_context(self, question):
+    def get_sparql_context(self, question, env):
         prompt = f"""Write a SPARQL SELECT query. 
         Use ONLY these prefixes: {PREFIXES}
 
@@ -56,7 +85,7 @@ class LoL_RAG_System:
         - Spell Slot (Q,W,E,R): `?c lol:championName "Sett" . ?c lol:hasSpell ?s . ?s lol:spellSlot "Q" .`
         - Spell Cost: `?c lol:championName "Sett" . ?c lol:championName "Sett" . ?c lol:hasSpell ?s . ?s lol:spellSlot "Q" . ?s lol:cooldownBurn ?val .`
         - Passives: `?c lol:championName "Sett" . ?c lol:hasPassive ?p . ?p lol:spellDescription ?desc .`
-        - Stats: `?c lol:championName "Sett" . ?c lol:hasStats ?st . ?st lol:attackrange ?val .`
+        - Stats: `?c lol:championName "Sett" . ?c lol:hasStats ?st . ?st lol:attackrange ?val . ?st lol:baseHP ?hp . ?st lol:attackdamage ?attackDamage .`
 
         RULES:
         1. "Q", "W", "E", "R" are `lol:spellSlot`, NOT `lol:spellName`.
@@ -67,7 +96,12 @@ class LoL_RAG_System:
 
         Question: {question}
         """
-        query_raw = self.ask_llm(prompt).strip()
+        if env == "local":
+            query_raw = self.ask_llm(prompt).strip()
+        elif env == "groq":
+            query_raw = self.ask_groq(prompt).strip()
+        else:
+            return None, None
         match = re.search(r"```(?:sparql)?\s*(.*?)\s*```", query_raw, re.DOTALL | re.IGNORECASE)
         query_str = match.group(1).strip() if match else None
         
@@ -94,12 +128,15 @@ class LoL_RAG_System:
             return result.df.head(3).to_string()
         except: return "No prediction."
 
-    def chat_loop(self):
+    def chat_loop(self, env):
         print("\n=== LoL Oracle Ready ===")
         while True:
             user_q = input("\nUser: ").strip()
             if not user_q or user_q.lower() in ['exit', 'quit']: break
-            query, facts = self.get_sparql_context(user_q)
+            if env == "groq":
+                query, facts = self.get_sparql_context(user_q, env="groq")
+            else:
+                query, facts = self.get_sparql_context(user_q, env="local")
             
             if facts:
                 context = "DATABASE FACTS:\n" + "\n".join(facts)
@@ -121,8 +158,12 @@ class LoL_RAG_System:
             If the answer is there, state it clearly. If not, say you don't know.
             
             ANSWER:"""
-            print("\nAI Oracle:", self.ask_llm(final_prompt))
+            if env == "local":
+                print("\nAI Oracle:", self.ask_llm(final_prompt))
+            elif env == "groq":
+                print("\nAI Oracle:", self.ask_groq(final_prompt))
+            
 
 if __name__ == "__main__":
     sys = LoL_RAG_System()
-    sys.chat_loop()
+    sys.chat_loop(env="local")

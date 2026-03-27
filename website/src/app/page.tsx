@@ -86,10 +86,10 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold mb-8">Try asking the Assistant...</h2>
             <div className="flex flex-wrap justify-center gap-4">
               {[
-                "What region is Garen from?",
-                "Which champions are Assassins?",
-                "Tell me about Yasuo's lore.",
-                "How does Noxus map to Wikidata?"
+                // "How much attack damage does Ashe have?",
+                "What is the cooldown of Darius' E spell?",
+                "What is the Caitlyn's attack range?",
+                // "How much base HP does Sion have?"
               ].map((prompt, i) => (
                 <Link 
                   key={i}
