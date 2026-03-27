@@ -46,9 +46,9 @@ export default function ExplorePage() {
       try {
         const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const [champRes, alignRes, schemaRes] = await Promise.all([
-          fetch(`http://${API_BASE}/api/champions`),
-          fetch(`http://${API_BASE}/api/alignments`),
-          fetch(`http://${API_BASE}/api/schema`) // NEW CALL
+          fetch(`${API_BASE}/api/champions`),
+          fetch(`${API_BASE}/api/alignments`),
+          fetch(`${API_BASE}/api/schema`) // NEW CALL
         ]);
         
         if (champRes.ok) setChampions(await champRes.json());
