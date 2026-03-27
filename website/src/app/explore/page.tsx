@@ -39,6 +39,15 @@ export default function ExplorePage() {
     
     return name.replace(/[' \.]/g, '');
   };
+  
+  const requestConfig = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": "true", // CRUCIAL
+      "User-Agent": "Custom" // Parfois nécessaire pour certains tunnels
+    },
+  };
 
   useEffect(() => {
     const fetchGraphData = async () => {
@@ -46,14 +55,24 @@ export default function ExplorePage() {
       try {
         const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const [champRes, alignRes, schemaRes] = await Promise.all([
-          fetch(`${API_BASE}/api/champions`),
-          fetch(`${API_BASE}/api/alignments`),
-          fetch(`${API_BASE}/api/schema`) // NEW CALL
-        ]);
+            fetch(`${API_BASE}/api/champions`, requestConfig),
+            fetch(`${API_BASE}/api/alignments`, requestConfig),
+            fetch(`${API_BASE}/api/schema`, requestConfig)
+          ]);
         
-        if (champRes.ok) setChampions(await champRes.json());
-        if (alignRes.ok) setAlignments(await alignRes.json());
-        if (schemaRes.ok) setSchema(await schemaRes.json()); // SAVE SCHEMA
+          // Vérifie si la réponse est bien du JSON avant de parser
+          const contentType = champRes.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) {
+            const text = await champRes.text();
+            console.error("Le serveur n'a pas renvoyé de JSON mais :", text.substring(0, 100));
+            throw new Error("Réponse invalide du serveur (HTML au lieu de JSON)");
+          }
+        
+          const [champions, alignments, schema] = await Promise.all([
+            champRes.json(),
+            alignRes.json(),
+            schemaRes.json()
+          ]);
       } catch (error) {
         console.error("Failed to fetch graph data", error);
       } finally {

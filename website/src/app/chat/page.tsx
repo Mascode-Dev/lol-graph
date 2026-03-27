@@ -80,7 +80,10 @@ export default function ChatPage() {
       const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       const response = await fetch(`${API_BASE}/api/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true"
+        },
         body: JSON.stringify({ 
           message: queryText
         })
