@@ -54,7 +54,7 @@ class LoL_RAG_System:
         FOOLPROOF TEMPLATES:
         - Spell Names: `?c lol:championName "Sett" . ?c lol:hasSpell ?s . ?s lol:spellName ?name .`
         - Spell Slot (Q,W,E,R): `?c lol:championName "Sett" . ?c lol:hasSpell ?s . ?s lol:spellSlot "Q" .`
-        - Spell Cost: `?c lol:championName "Sett" . ?c lol:hasSpell ?s . ?s lol:spellSlot "Q" . ?s lol:costBurn ?val .`
+        - Spell Cost: `?c lol:championName "Sett" . ?c lol:championName "Sett" . ?c lol:hasSpell ?s . ?s lol:spellSlot "Q" . ?s lol:cooldownBurn ?val .`
         - Passives: `?c lol:championName "Sett" . ?c lol:hasPassive ?p . ?p lol:spellDescription ?desc .`
         - Stats: `?c lol:championName "Sett" . ?c lol:hasStats ?st . ?st lol:attackrange ?val .`
 
