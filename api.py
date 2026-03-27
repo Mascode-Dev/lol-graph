@@ -8,6 +8,11 @@ import json
 import csv
 import os
 from rdflib import Graph
+from dotenv import load_dotenv
+
+load_dotenv()
+
+VPS_IP = os.getenv("VPS_IP")
 
 # Add rag-lab to path so we can import your script
 sys.path.append('./rag-lab')
@@ -18,7 +23,7 @@ app = FastAPI()
 # Allow your Next.js app to talk to this API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000",VPS_IP],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
