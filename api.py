@@ -189,53 +189,6 @@ async def get_full_schema():
         print(f"Error reading schema: {e}")
         return []
 
-@app.get("/api/alignments")
-async def get_all_alignments():
-    """Reads the alignment_mapping.csv file and formats it for the frontend."""
-    file_path = "data/processed/alignment_mapping.csv"
-    if not os.path.exists(file_path):
-        return []
-        
-    try:
-        alignments = []
-        with open(file_path, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            
-            for row in reader:
-                # 1. Grab raw values safely using the exact CSV headers
-                raw_source = row.get("Private Entity", "")
-                raw_target = row.get("External URI", "")
-                raw_conf = row.get("Confidence", "0.0")
-                raw_label = row.get("Label", "")
-                
-                # 2. Clean up Source (e.g., "http://.../Aatrox" -> "lol:Aatrox")
-                source = raw_source.replace("http://leagueoflegends.knowledge/champion/", "lol:")
-                
-                # 3. Clean up Target (e.g., "http://.../Q100254962" -> "wd:Q100254962")
-                if raw_target == "NOT_FOUND" or not raw_target:
-                    target = "Unlinked"
-                else:
-                    target = raw_target.replace("http://www.wikidata.org/entity/", "wd:")
-                    
-                # 4. Parse Confidence as a float
-                try:
-                    confidence = float(raw_conf)
-                except ValueError:
-                    confidence = 0.0
-                    
-                # 5. Build the exact JSON dictionary React expects
-                alignments.append({
-                    "entity": source,
-                    "wdTarget": target,
-                    "confidence": confidence,
-                    "label": raw_label.strip()
-                })
-                
-        return alignments
-    except Exception as e:
-        print(f"Error reading alignments: {e}")
-        return []
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

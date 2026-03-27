@@ -13,7 +13,7 @@ export default function ExplorePage() {
   const [alignments, setAlignments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [schema, setSchema] = useState<any[]>([]);
-  
+  const [error, setError] = useState<string | null>(null);
 
   // NEW: State to hold the champion clicked for the modal
   const [selectedChampion, setSelectedChampion] = useState<any | null>(null);
@@ -45,7 +45,7 @@ export default function ExplorePage() {
     headers: {
       "Content-Type": "application/json",
       "ngrok-skip-browser-warning": "true", // CRUCIAL
-      "User-Agent": "Custom" // Parfois nécessaire pour certains tunnels
+      "Accept": "application/json"
     },
   };
 
@@ -54,25 +54,46 @@ export default function ExplorePage() {
       setIsLoading(true);
       try {
         const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        
+        // 1. Lancer les requêtes
         const [champRes, alignRes, schemaRes] = await Promise.all([
-            fetch(`${API_BASE}/api/champions`, requestConfig),
-            fetch(`${API_BASE}/api/alignments`, requestConfig),
-            fetch(`${API_BASE}/api/schema`, requestConfig)
-          ]);
-        
-          // Vérifie si la réponse est bien du JSON avant de parser
-          const contentType = champRes.headers.get("content-type");
-          if (!contentType || !contentType.includes("application/json")) {
-            const text = await champRes.text();
-            console.error("Le serveur n'a pas renvoyé de JSON mais :", text.substring(0, 100));
-            throw new Error("Réponse invalide du serveur (HTML au lieu de JSON)");
+          fetch(`${API_BASE}/api/champions`, requestConfig),
+          fetch(`${API_BASE}/api/alignments`, requestConfig),
+          fetch(`${API_BASE}/api/schema`, requestConfig)
+        ]);
+
+        // 2. Vérifier chaque réponse AVANT le .json()
+        const responses = [
+          { name: "Champions", res: champRes },
+          { name: "Alignments", res: alignRes },
+          { name: "Schema", res: schemaRes }
+        ];
+
+        for (const item of responses) {
+          if (!item.res.ok) {
+            throw new Error(`Endpoint ${item.name} a renvoyé une erreur ${item.res.status}`);
           }
-        
-          const [champions, alignments, schema] = await Promise.all([
-            champRes.json(),
-            alignRes.json(),
-            schemaRes.json()
-          ]);
+          
+          const contentType = item.res.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) {
+            // Si on reçoit du HTML, on log le début pour comprendre
+            const text = await item.res.text();
+            console.error(`Le serveur pour ${item.name} a renvoyé du HTML :`, text.substring(0, 200));
+            throw new Error(`Le serveur pour ${item.name} a renvoyé du HTML au lieu de JSON. Vérifie ton URL Ngrok.`);
+          }
+        }
+
+        // 3. Si tout est OK, on parse
+        const [champData, alignData, schemaData] = await Promise.all([
+          champRes.json(),
+          alignRes.json(),
+          schemaRes.json()
+        ]);
+
+        setChampions(champData);
+        setAlignments(alignData);
+        setSchema(schemaData);
+        setError(null);
       } catch (error) {
         console.error("Failed to fetch graph data", error);
       } finally {
